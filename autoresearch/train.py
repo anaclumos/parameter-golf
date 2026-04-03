@@ -845,8 +845,16 @@ def main() -> None:
     quant_obj, quant_stats = quantize_state_dict_int8(flat_state)
     quant_path = out_dir / f"{args.run_id}_mlx_model.int8.ptz"
     quant_file_bytes = serialize_quant_obj(quant_obj, quant_path)
+    code_bytes = len(code.encode("utf-8"))
+    total_submission_bytes = quant_file_bytes + code_bytes
+    max_submission_bytes = 16 * 1024 * 1024  # 16 MB
     ratio = quant_stats["baseline_tensor_bytes"] / max(quant_stats["int8_payload_bytes"], 1)
     log(f"serialized_model_int8_zlib:{quant_file_bytes} bytes (payload:{quant_stats['int8_payload_bytes']} ratio:{ratio:.2f}x)")
+    log(f"code_size:{code_bytes} bytes")
+    log(f"total_submission_size:{total_submission_bytes} bytes ({total_submission_bytes / 1e6:.2f} MB)")
+    log(f"size_budget_remaining:{max_submission_bytes - total_submission_bytes} bytes")
+    if total_submission_bytes > max_submission_bytes:
+        log(f"SIZE_VIOLATION: {total_submission_bytes} > {max_submission_bytes} (over by {(total_submission_bytes - max_submission_bytes) / 1e6:.2f} MB)")
 
     # Roundtrip validation
     quant_flat = dequantize_state_dict_int8(deserialize_quant_obj(quant_path))
@@ -856,6 +864,7 @@ def main() -> None:
     qms = 1000.0 * (time.perf_counter() - qt0)
     log(f"final_int8_zlib_roundtrip val_loss:{qvl:.4f} val_bpb:{qvb:.4f} eval_time:{qms:.0f}ms")
     log(f"final_int8_zlib_roundtrip_exact val_loss:{qvl:.8f} val_bpb:{qvb:.8f}")
+    log(f"submission_valid:{'YES' if total_submission_bytes <= max_submission_bytes else 'NO'}")
 
 if __name__ == "__main__":
     main()

@@ -64,6 +64,19 @@ def parse_val_bpb(output: str) -> float | None:
     return None
 
 
+def check_size_budget(output: str) -> tuple[bool, int | None]:
+    """Check if submission fits under 16MB. Returns (valid, total_bytes)."""
+    for line in output.split("\n"):
+        if "SIZE_VIOLATION" in line:
+            match = re.search(r"total_submission_size:(\d+)", output)
+            total = int(match.group(1)) if match else None
+            return False, total
+    match = re.search(r"total_submission_size:(\d+)", output)
+    if match:
+        return int(match.group(1)) <= 16 * 1024 * 1024, int(match.group(1))
+    return True, None  # no size info = assume ok
+
+
 def log_result(exp_id: int, commit: str, val_bpb: float | None,
                status: str, description: str) -> None:
     header = "experiment\tcommit\tval_bpb\tstatus\tdescription\ttimestamp\n"
@@ -219,7 +232,7 @@ def main():
 
         # Print key output lines
         for line in stdout.split("\n"):
-            if any(k in line for k in ["val_bpb:", "stopping_early", "final_int8"]):
+            if any(k in line for k in ["val_bpb:", "stopping_early", "final_int8", "total_submission", "SIZE_VIOLATION", "submission_valid"]):
                 print(f"  {line.strip()}")
 
         if rc != 0:
@@ -240,7 +253,17 @@ def main():
             log_result(i, commit, None, "error", description[:80])
             continue
 
-        print(f"val_bpb: {val_bpb:.6f} (best: {best_bpb:.6f})")
+        # Check 16MB size budget
+        size_ok, total_bytes = check_size_budget(stdout)
+        size_mb = f"{total_bytes / 1e6:.2f}MB" if total_bytes else "unknown"
+        if not size_ok:
+            print(f"SIZE VIOLATION ({size_mb} > 16MB)! Reverting.")
+            Path(TRAIN_SCRIPT).write_text(original_code)
+            git_commit(f"revert exp{i}: over 16MB")
+            log_result(i, commit, val_bpb, "size_violation", f">{size_mb}: {description[:60]}")
+            continue
+
+        print(f"val_bpb: {val_bpb:.6f} (best: {best_bpb:.6f}) size: {size_mb}")
 
         if val_bpb < best_bpb:
             delta = best_bpb - val_bpb

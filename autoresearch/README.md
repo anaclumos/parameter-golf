@@ -48,8 +48,10 @@ WORKFLOW (repeat each iteration):
 4. Run training:
    cd /Users/sc/Developer/parameter-golf/autoresearch && MAX_WALLCLOCK_SECONDS=1200 uv run python3 train.py 2>&1 | tee /tmp/train_output.txt
 5. Parse val_bpb from the "final_int8_zlib_roundtrip_exact" line in the output.
-6. Decision:
-   - If val_bpb < best_bpb: KEEP. Update best. Log as "kept" in results.tsv.
+6. Check the "submission_valid" line — if NO (over 16MB), this is a failure regardless of val_bpb.
+7. Decision:
+   - If submission_valid=NO: REVERT. Log as "size_violation".
+   - If val_bpb < best_bpb AND submission_valid=YES: KEEP. Update best. Log as "kept".
    - If val_bpb >= best_bpb: REVERT with `git checkout autoresearch/train.py`. Log as "reverted".
    - If crash: REVERT. Log as "crash".
 7. Append a row to autoresearch/results.tsv with: experiment_number, git_short_hash, val_bpb, status, one-line description, ISO timestamp.
@@ -57,10 +59,12 @@ WORKFLOW (repeat each iteration):
 
 RULES:
 - ONE change per experiment. Isolate variables.
+- Total submission (model int8+zlib + code) MUST fit under 16 MB. Check "submission_valid" and "total_submission_size" in output.
 - Build on what works. Compound successes.
-- Revert ALL failures immediately.
+- Revert ALL failures immediately (including size violations).
 - Prefer small, targeted modifications over rewrites.
 - Balance exploration (novel ideas) and exploitation (tuning what works).
+- Quantization is part of the search space — you can modify the quantization code in train.py (int6, GPTQ, better compression, etc.)
 - Track everything in results.tsv.
 
 IDEAS TO TRY (non-exhaustive):
@@ -71,6 +75,8 @@ IDEAS TO TRY (non-exhaustive):
 - Embeddings: BigramHash buckets/dim, trigram hashing, SmearGate
 - Training: weight decay schedule, gradient clipping, batch size
 - Optimizer: Muon NS steps, momentum warmup, per-layer LR scaling
+- Quantization: int6, GPTQ, clip percentile search, LZMA compression
+- Size optimization: selective pruning, model dim tuning to fit 16MB budget
 
 SIMPLICITY CRITERION: All else being equal, simpler is better. Tiny improvement + lots of hacky code = not worth it. Same performance + simpler code = always keep.
 

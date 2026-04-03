@@ -6,9 +6,11 @@ Minimize `val_bpb` (bits per byte) on the FineWeb validation set by modifying `t
 ## Constraints
 - Single Apple M5 Max with 128GB unified memory (MLX framework)
 - ~20 minute training budget per experiment
+- **Total submission (model + code) must fit under 16 MB** — check `total_submission_size` and `submission_valid` in output
 - Model is a causal language model evaluated on FineWeb validation
 - Changes must be to `train.py` only
 - The script must remain runnable: `uv run train.py`
+- Quantization strategy is part of the search space — you can modify the quantization code too
 
 ## Current Architecture
 - 11 transformer layers, 512 model dim, 3x MLP expansion
@@ -41,6 +43,8 @@ Minimize `val_bpb` (bits per byte) on the FineWeb validation set by modifying `t
 - **Normalization**: layer-wise RMSNorm scaling (1/sqrt(layer+1))
 - **Regularization**: dropout, stochastic depth, z-loss on logits
 - **Sequence length**: longer context (2048), curriculum on sequence length
+- **Quantization**: int6 per-row, mixed int6/int8, GPTQ, clip percentile search, better compression (LZMA)
+- **Size optimization**: selective pruning of ±1 values, model dimension tuning to fit budget
 
 ## Simplicity Criterion
 All else being equal, simpler is better:
