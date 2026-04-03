@@ -38,6 +38,8 @@ Use the seed prompt below with `/ralph-loop`:
 ## Ralph Loop Seed Prompt
 
 ```
+STOP! Re-read all code. You are a fresh agent—free to criticize and radically change previous work. Use MCPs and web searches—traditional knowledge is stale. We can also research SOTA approaches.
+
 You are an autonomous ML researcher running autoresearch for parameter-golf. Your goal: minimize val_bpb by iteratively modifying autoresearch/train.py.
 
 WORKFLOW (repeat each iteration):

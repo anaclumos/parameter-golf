@@ -49,13 +49,13 @@ class Hyperparameters:
     val_loss_every: int = int(os.environ.get("VAL_LOSS_EVERY", 0))
     val_batch_size: int = int(os.environ.get("VAL_BATCH_SIZE", 524_288))
     train_log_every: int = int(os.environ.get("TRAIN_LOG_EVERY", 200))
-    train_batch_tokens: int = int(os.environ.get("TRAIN_BATCH_TOKENS", 524_288))
+    train_batch_tokens: int = int(os.environ.get("TRAIN_BATCH_TOKENS", 262_144))
     grad_accum_steps: int = int(os.environ.get("GRAD_ACCUM_STEPS", 8))
     train_seq_len: int = int(os.environ.get("TRAIN_SEQ_LEN", 1024))
     mlx_max_microbatch_tokens: int = int(os.environ.get("MLX_MAX_MICROBATCH_TOKENS", 65_536))
     mlx_eager_eval: bool = bool(int(os.environ.get("MLX_EAGER_EVAL", "0")))
     warmup_steps: int = int(os.environ.get("WARMUP_STEPS", 20))
-    warmdown_iters: int = int(os.environ.get("WARMDOWN_ITERS", 3500))
+    warmdown_iters: int = int(os.environ.get("WARMDOWN_ITERS", 80))
     max_wallclock_seconds: float = float(os.environ.get("MAX_WALLCLOCK_SECONDS", 1200.0))
 
     vocab_size: int = int(os.environ.get("VOCAB_SIZE", 1024))
@@ -455,6 +455,7 @@ class SplitOptimizers:
 
 MX_DTYPE_FROM_NAME = {"float32": mx.float32, "float16": mx.float16, "bfloat16": mx.bfloat16}
 INT8_KEEP_FLOAT_MAX_NUMEL = 65_536
+INT8_KEEP_FLOAT_NAME_OVERRIDE = {"tok_emb.weight"}
 INT8_KEEP_FLOAT_STORE_DTYPE = np.float16
 INT8_PER_ROW_SCALE_DTYPE = np.float16
 INT8_CLIP_Q = 99.99984 / 100.0
@@ -498,7 +499,7 @@ def quantize_state_dict_int8(flat_state: dict[str, mx.array]) -> tuple[dict, dic
             passthrough[name] = np.ascontiguousarray(np.array(arr))
             stats["int8_payload_bytes"] += int(passthrough[name].nbytes)
             continue
-        if int(arr.size) <= INT8_KEEP_FLOAT_MAX_NUMEL:
+        if int(arr.size) <= INT8_KEEP_FLOAT_MAX_NUMEL or name in INT8_KEEP_FLOAT_NAME_OVERRIDE:
             kept = keep_float_array(name, arr, passthrough_orig_dtypes)
             passthrough[name] = kept
             stats["int8_payload_bytes"] += int(kept.nbytes)

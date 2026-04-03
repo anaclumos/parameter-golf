@@ -1,0 +1,10 @@
+experiment	commit	val_bpb	status	description	timestamp
+0	878fbc8	N/A	crash	Baseline (no changes) killed with exit 137 after warmup	2026-04-03T16:50:11+09:00
+1	878fbc8	N/A	crash	Reduce warmup_steps from 20 to 2; still killed with exit 137	2026-04-03T16:51:35+09:00
+2	878fbc8	N/A	crash	Halve val_batch_size to 262144; reached step 1 then killed with exit 137	2026-04-03T16:52:55+09:00
+3	878fbc8	N/A	crash	Increase grad_accum_steps to 16; still killed with exit 137 after warmup	2026-04-03T16:54:27+09:00
+4	878fbc8	4.011893	kept	Halve train_batch_tokens to 262144; stable run, 7.93 MB submission	2026-04-04T01:10:21+09:00
+5	878fbc8	3.879361	kept	Reduce warmdown_iters from 3500 to 80 to match the 20-minute run budget	2026-04-04T01:37:10+09:00
+6	878fbc8	3.879393	reverted	Increase INT8_KEEP_FLOAT_MAX_NUMEL to 131072; slightly worse despite 12.54 MB size	2026-04-04T01:51:12+09:00
+7	878fbc8	3.876937	kept	Keep tok_emb.weight in float16 during quantization; 9.33 MB submission	2026-04-04T01:55:30+09:00
+8	878fbc8	3.876937	reverted	Keep tok_emb.weight in float32; matched float16 bpb with larger 9.45 MB size	2026-04-04T01:59:00+09:00
