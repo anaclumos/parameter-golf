@@ -56,7 +56,7 @@ class Hyperparameters:
     mlx_eager_eval: bool = bool(int(os.environ.get("MLX_EAGER_EVAL", "0")))
     warmup_steps: int = int(os.environ.get("WARMUP_STEPS", 20))
     warmdown_iters: int = int(os.environ.get("WARMDOWN_ITERS", 80))
-    max_wallclock_seconds: float = float(os.environ.get("MAX_WALLCLOCK_SECONDS", 1200.0))
+    max_wallclock_seconds: float = float(os.environ.get("MAX_WALLCLOCK_SECONDS", 1800.0))
 
     vocab_size: int = int(os.environ.get("VOCAB_SIZE", 1024))
     num_layers: int = int(os.environ.get("NUM_LAYERS", 11))
@@ -72,7 +72,7 @@ class Hyperparameters:
     qk_gain_init: float = float(os.environ.get("QK_GAIN_INIT", 1.5))
 
     # SOTA additions
-    leaky_relu_slope: float = float(os.environ.get("LEAKY_RELU_SLOPE", 0.5))
+    leaky_relu_slope: float = float(os.environ.get("LEAKY_RELU_SLOPE", 0.3))
     rope_partial_dims: int = int(os.environ.get("ROPE_PARTIAL_DIMS", 16))
     xsa_enabled: bool = bool(int(os.environ.get("XSA_ENABLED", "1")))
     bigram_vocab_size: int = int(os.environ.get("BIGRAM_VOCAB_SIZE", 3072))
@@ -91,7 +91,7 @@ class Hyperparameters:
     muon_backend_steps: int = int(os.environ.get("MUON_BACKEND_STEPS", 5))
     muon_momentum_warmup_start: float = float(os.environ.get("MUON_MOMENTUM_WARMUP_START", 0.92))
     muon_momentum_warmup_steps: int = int(os.environ.get("MUON_MOMENTUM_WARMUP_STEPS", 6))
-    muon_wd: float = float(os.environ.get("MUON_WD", 0.04))
+    muon_wd: float = float(os.environ.get("MUON_WD", 0.02))
     grad_clip_norm: float = float(os.environ.get("GRAD_CLIP_NORM", 0.0))
 
     out_dir: str = os.environ.get("OUT_DIR", "logs")

@@ -24,3 +24,14 @@ experiment	commit	val_bpb	status	description	timestamp
 22	354a4f7	2.19538741	kept	Reduce EMA_DECAY from 0.989 to 0.988; stable 15.80 MB submission	2026-04-04T12:30:01+09:00
 23	354a4f7	2.18651284	kept	Reduce EMA_DECAY from 0.988 to 0.9875; stable 15.89 MB submission	2026-04-04T12:58:31+09:00
 24	354a4f7	2.18846976	reverted	Reduce EMA_DECAY from 0.9875 to 0.98725; slightly worse at 15.92 MB	2026-04-04T13:26:54+09:00
+25	354a4f7	2.29795971	reverted	Increase matrix_lr from 0.025 to 0.03; worse bpb	2026-04-04T14:35:00+09:00
+26	354a4f7	2.18704880	reverted	Increase wallclock from 1200s to 1800s; marginally worse (0.0005)	2026-04-04T15:22:00+09:00
+27	354a4f7	2.18051503	kept	Reduce muon_wd 0.04->0.02 + wallclock 1800s; 16.14 MB valid	2026-04-04T16:10:00+09:00
+28	354a4f7	2.24289723	reverted	Increase warmdown_iters 80->120; worse bpb	2026-04-04T16:55:00+09:00
+29	354a4f7	2.17925830	kept	Reduce leaky_relu_slope 0.5->0.3; 16.35 MB valid	2026-04-04T17:45:00+09:00
+30	354a4f7	2.17979436	reverted	Reduce leaky_relu_slope 0.3->0.15; marginally worse	2026-04-04T18:35:00+09:00
+31	354a4f7	2.65680116	reverted	Reduce muon_momentum_warmup_steps 6->4; much worse (resource contention)	2026-04-04T19:40:00+09:00
+32	354a4f7	3.60068539	reverted	Reduce warmup_steps 20->10; invalid due to extreme resource contention	2026-04-05T00:10:00+09:00
+33	354a4f7	2.28918640	reverted	Increase rope_partial_dims 16->24; worse (possibly resource contention)	2026-04-05T01:15:00+09:00
+34	354a4f7	2.89476282	reverted	Increase logit_softcap 30->50; much worse (resource contention)	2026-04-05T02:20:00+09:00
+35	354a4f7	2.97987201	reverted	Reduce EMA_DECAY 0.9875->0.987; much worse (resource contention)	2026-04-05T03:20:00+09:00
