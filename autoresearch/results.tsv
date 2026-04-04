@@ -8,3 +8,19 @@ experiment	commit	val_bpb	status	description	timestamp
 6	878fbc8	3.879393	reverted	Increase INT8_KEEP_FLOAT_MAX_NUMEL to 131072; slightly worse despite 12.54 MB size	2026-04-04T01:51:12+09:00
 7	878fbc8	3.876937	kept	Keep tok_emb.weight in float16 during quantization; 9.33 MB submission	2026-04-04T01:55:30+09:00
 8	878fbc8	3.876937	reverted	Keep tok_emb.weight in float32; matched float16 bpb with larger 9.45 MB size	2026-04-04T01:59:00+09:00
+9	354a4f7	3.79526483	baseline	Baseline rerun on current train.py; stable 9.72 MB submission	2026-04-04T03:52:13+09:00
+10	354a4f7	3.48921613	kept	Reduce MUON_MOMENTUM_WARMUP_STEPS from 1500 to 64; stable 11.12 MB submission	2026-04-04T04:47:43+09:00
+11	354a4f7	3.55617460	reverted	Reduce WARMUP_STEPS from 20 to 8; worse despite smaller 10.82 MB submission	2026-04-04T05:14:09+09:00
+12	354a4f7	2.98863411	kept	Reduce EMA_DECAY from 0.997 to 0.995; stable 12.12 MB submission	2026-04-04T05:40:37+09:00
+13	354a4f7	N/A	crash	Raise INT8_CLIP_Q to 99.99990; timed out before producing final metrics	2026-04-04T08:29:53+09:00
+14	354a4f7	2.91743093	kept	Reduce MUON_MOMENTUM_WARMUP_STEPS from 64 to 32; stable 12.46 MB submission	2026-04-04T08:55:59+09:00
+15	354a4f7	2.83666948	kept	Reduce MUON_MOMENTUM_WARMUP_STEPS from 32 to 16; stable 12.76 MB submission	2026-04-04T09:22:09+09:00
+16	354a4f7	2.74547111	kept	Reduce MUON_MOMENTUM_WARMUP_STEPS from 16 to 8; stable 13.17 MB submission	2026-04-04T09:48:08+09:00
+17	354a4f7	2.75193524	reverted	Reduce MUON_MOMENTUM_WARMUP_STEPS from 8 to 4; slightly worse at 13.18 MB	2026-04-04T10:14:23+09:00
+18	354a4f7	2.42601529	kept	Reduce EMA_DECAY from 0.995 to 0.993; stable 14.26 MB submission	2026-04-04T10:40:52+09:00
+19	354a4f7	2.28685047	kept	Reduce EMA_DECAY from 0.993 to 0.991; stable 14.99 MB submission	2026-04-04T11:06:48+09:00
+20	354a4f7	2.23709668	kept	Reduce EMA_DECAY from 0.991 to 0.989; stable 15.36 MB submission	2026-04-04T11:33:47+09:00
+21	354a4f7	2.17732936	size_violation	Reduce EMA_DECAY from 0.989 to 0.987; improved bpb but exceeded decimal 16 MB cap at 16.06 MB	2026-04-04T12:02:23+09:00
+22	354a4f7	2.19538741	kept	Reduce EMA_DECAY from 0.989 to 0.988; stable 15.80 MB submission	2026-04-04T12:30:01+09:00
+23	354a4f7	2.18651284	kept	Reduce EMA_DECAY from 0.988 to 0.9875; stable 15.89 MB submission	2026-04-04T12:58:31+09:00
+24	354a4f7	2.18846976	reverted	Reduce EMA_DECAY from 0.9875 to 0.98725; slightly worse at 15.92 MB	2026-04-04T13:26:54+09:00

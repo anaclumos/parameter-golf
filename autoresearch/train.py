@@ -78,7 +78,7 @@ class Hyperparameters:
     bigram_vocab_size: int = int(os.environ.get("BIGRAM_VOCAB_SIZE", 3072))
     bigram_dim: int = int(os.environ.get("BIGRAM_DIM", 112))
     bigram_enabled: bool = bool(int(os.environ.get("BIGRAM_ENABLED", "1")))
-    ema_decay: float = float(os.environ.get("EMA_DECAY", 0.997))
+    ema_decay: float = float(os.environ.get("EMA_DECAY", 0.9875))
 
     # Optimizer
     beta1: float = float(os.environ.get("BETA1", 0.9))
@@ -90,7 +90,7 @@ class Hyperparameters:
     muon_momentum: float = float(os.environ.get("MUON_MOMENTUM", 0.99))
     muon_backend_steps: int = int(os.environ.get("MUON_BACKEND_STEPS", 5))
     muon_momentum_warmup_start: float = float(os.environ.get("MUON_MOMENTUM_WARMUP_START", 0.92))
-    muon_momentum_warmup_steps: int = int(os.environ.get("MUON_MOMENTUM_WARMUP_STEPS", 1500))
+    muon_momentum_warmup_steps: int = int(os.environ.get("MUON_MOMENTUM_WARMUP_STEPS", 6))
     muon_wd: float = float(os.environ.get("MUON_WD", 0.04))
     grad_clip_norm: float = float(os.environ.get("GRAD_CLIP_NORM", 0.0))
 
