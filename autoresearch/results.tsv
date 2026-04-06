@@ -35,3 +35,21 @@ experiment	commit	val_bpb	status	description	timestamp
 33	354a4f7	2.28918640	reverted	Increase rope_partial_dims 16->24; worse (possibly resource contention)	2026-04-05T01:15:00+09:00
 34	354a4f7	2.89476282	reverted	Increase logit_softcap 30->50; much worse (resource contention)	2026-04-05T02:20:00+09:00
 35	354a4f7	2.97987201	reverted	Reduce EMA_DECAY 0.9875->0.987; much worse (resource contention)	2026-04-05T03:20:00+09:00
+36	a9fa5bc	2.83980032	reverted	Increase muon_backend_steps 5->7; worse (resource contention)	2026-04-05T04:30:00+09:00
+37	a9fa5bc	3.11819329	reverted	Reduce beta2 0.95->0.9; worse (resource contention)	2026-04-05T06:00:00+09:00
+38	a9fa5bc	2.78316497	reverted	Reduce warmdown_iters 80->40; 56 steps (contention); still worse	2026-04-05T07:40:00+09:00
+39	a9fa5bc	2.72106580	reverted	Fixed warmdown fraction (0.45 of total time); 56 steps; still contention	2026-04-05T09:10:00+09:00
+40	a9fa5bc	2.97553220	reverted	Increase qk_gain_init 1.5->2.0; worse (contention)	2026-04-05T10:30:00+09:00
+41	a9fa5bc	2.60811062	baseline	Baseline rerun; 66 steps due to autoku contention; need 100+ for 2.18	2026-04-05T11:30:00+09:00
+42	a9fa5bc	2.80733375	reverted	Reduce grad_accum_steps 8->4; 62 steps; worse (contention)	2026-04-05T12:45:00+09:00
+43	a9fa5bc	2.66067590	reverted	Reduce warmdown_iters 80->20; 58 steps; contention	2026-04-05T14:10:00+09:00
+44	a9fa5bc	3.03580849	reverted	Increase bigram_vocab_size 3072->4096; worse (contention)	2026-04-05T15:40:00+09:00
+45	a9fa5bc	2.10830536	size_violation	Increase wallclock 1800s->3600s; 138 steps; 17.0MB over by 0.22MB	2026-04-05T18:00:00+09:00
+46	a9fa5bc	2.36958648	reverted	Increase wallclock 1800s->2700s; 88 steps; 13.88 MB	2026-04-05T20:30:00+09:00
+47	a9fa5bc	2.24619374	reverted	Increase wallclock 1800s->3200s; 104 steps; 15.01 MB	2026-04-05T23:00:00+09:00
+48	a9fa5bc	2.10475393	size_violation	Increase wallclock to 3400s; 135 steps; 17.24MB over by 0.46MB	2026-04-06T02:00:00+09:00
+49	a9fa5bc	4.03532899	reverted	LZMA compression test; 14 steps (contention); 7.95MB model	2026-04-05T23:15:00+09:00
+50	a9fa5bc	3.77661268	reverted	LZMA+3600s; 35 steps (contention); 8.08MB LZMA vs ~17MB zlib	2026-04-06T01:00:00+09:00
+51	a9fa5bc	2.07201517	kept	LZMA compression+7200s wallclock; 150 steps; 15.09MB valid	2026-04-06T04:30:00+09:00
+52	a9fa5bc	1.95070272	size_violation	EMA_DECAY 0.9875->0.986; 198 steps; 18.26MB over by 1.48MB	2026-04-06T09:00:00+09:00
+53	a9fa5bc	2.03102705	size_violation	EMA_DECAY 0.9875->0.987; 169 steps; 17.17MB over by 0.40MB	2026-04-06T12:30:00+09:00

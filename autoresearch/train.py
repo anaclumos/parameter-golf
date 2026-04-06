@@ -21,7 +21,7 @@ import os
 import sys
 import time
 import uuid
-import zlib
+import lzma
 from collections.abc import Callable
 from pathlib import Path
 
@@ -56,7 +56,7 @@ class Hyperparameters:
     mlx_eager_eval: bool = bool(int(os.environ.get("MLX_EAGER_EVAL", "0")))
     warmup_steps: int = int(os.environ.get("WARMUP_STEPS", 20))
     warmdown_iters: int = int(os.environ.get("WARMDOWN_ITERS", 80))
-    max_wallclock_seconds: float = float(os.environ.get("MAX_WALLCLOCK_SECONDS", 1800.0))
+    max_wallclock_seconds: float = float(os.environ.get("MAX_WALLCLOCK_SECONDS", 1200.0))
 
     vocab_size: int = int(os.environ.get("VOCAB_SIZE", 1024))
     num_layers: int = int(os.environ.get("NUM_LAYERS", 11))
@@ -536,7 +536,7 @@ def dequantize_state_dict_int8(quant_obj: dict) -> dict[str, mx.array]:
     return out
 
 def serialize_quant_obj(obj: dict, path: Path) -> int:
-    """Serialize quantized model using numpy .npz + zlib instead of pickle."""
+    """Serialize quantized model using numpy .npz + lzma."""
     import io, struct
     buf = io.BytesIO()
     # Simple format: JSON metadata + concatenated numpy arrays
@@ -556,7 +556,7 @@ def serialize_quant_obj(obj: dict, path: Path) -> int:
     np_bytes = np_buf.getvalue()
     # Pack: [4 bytes meta_len][meta_json][npz_data]
     raw = struct.pack("<I", len(meta_bytes)) + meta_bytes + np_bytes
-    compressed = zlib.compress(raw, level=9)
+    compressed = lzma.compress(raw, preset=9 | lzma.PRESET_EXTREME)
     with open(path, "wb") as f:
         f.write(compressed)
     return len(compressed)
@@ -566,7 +566,7 @@ def deserialize_quant_obj(path: Path) -> dict:
     import io, struct
     with open(path, "rb") as f:
         compressed = f.read()
-    raw = zlib.decompress(compressed)
+    raw = lzma.decompress(compressed)
     meta_len = struct.unpack("<I", raw[:4])[0]
     meta = json.loads(raw[4:4+meta_len].decode("utf-8"))
     np_data = np.load(io.BytesIO(raw[4+meta_len:]))
@@ -850,7 +850,7 @@ def main() -> None:
     total_submission_bytes = quant_file_bytes + code_bytes
     max_submission_bytes = 16 * 1024 * 1024  # 16 MB
     ratio = quant_stats["baseline_tensor_bytes"] / max(quant_stats["int8_payload_bytes"], 1)
-    log(f"serialized_model_int8_zlib:{quant_file_bytes} bytes (payload:{quant_stats['int8_payload_bytes']} ratio:{ratio:.2f}x)")
+    log(f"serialized_model_int8_lzma:{quant_file_bytes} bytes (payload:{quant_stats['int8_payload_bytes']} ratio:{ratio:.2f}x)")
     log(f"code_size:{code_bytes} bytes")
     log(f"total_submission_size:{total_submission_bytes} bytes ({total_submission_bytes / 1e6:.2f} MB)")
     log(f"size_budget_remaining:{max_submission_bytes - total_submission_bytes} bytes")
